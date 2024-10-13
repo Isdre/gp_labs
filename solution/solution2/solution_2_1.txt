@@ -1,1 +1,1 @@
-(sin( X1  ) + cos( X1  ))
+(SIN(A2)+COS(A2))

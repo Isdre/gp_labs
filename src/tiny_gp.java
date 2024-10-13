@@ -16,9 +16,9 @@ public class tiny_gp {
     public char [][] pop;
     private static Random rd = new Random();
     private static final int ADD = 110, SUB = 111, MUL = 112, DIV = 113,
-            SIN = 114, COS = 115,
-//            LN = 114,
-        FSET_START = ADD, FSET_END = COS;
+//            SIN = 114, COS = 115,
+            LN = 114,
+        FSET_START = ADD, FSET_END = LN;
     private static double minrandom, maxrandom;
     private static double [] x = new double[FSET_START];
     private static char [] program;
@@ -27,7 +27,7 @@ public class tiny_gp {
     private static double fbestpop = 0.0, favgpop = 0.0;
     private static long seed;
     private static double avg_len;
-    private static final int MAX_LEN = 10000, POPSIZE = 100000, DEPTH = 7, GENERATIONS = 100, TSIZE = 2;
+    private static final int MAX_LEN = 10000, POPSIZE = 100000, DEPTH = 3, GENERATIONS = 100, TSIZE = 2;
     public static final double PMUT_PER_NODE  = 0.05, CROSSOVER_PROB = 0.9;
     private static double [][] targets;
 
@@ -39,15 +39,15 @@ public class tiny_gp {
             case ADD : return( run() + run() );
             case SUB : return( run() - run() );
             case MUL : return( run() * run() );
-//            case LN : {
-//                double num = run();
-//                if ( num <= 0.001 )
-//                    return( num );
-//                else
-//                    return Math.log( num );
-//            }
-            case SIN : return Math.sin(run());
-            case COS : return Math.cos(run());
+            case LN : {
+                double num = run();
+                if ( num <= 0.001 )
+                    return -num;
+                else
+                    return Math.log( num );
+            }
+//            case SIN : return Math.sin(run());
+//            case COS : return Math.cos(run());
             case DIV : {
                 double num = run(), den = run();
                 if ( Math.abs( den ) <= 0.001 )
@@ -68,9 +68,9 @@ public class tiny_gp {
             case SUB:
             case MUL:
             case DIV:
-//            case LN:
-            case SIN:
-            case COS:
+            case LN:
+//            case SIN:
+//            case COS:
                 return( traverse( buffer, traverse( buffer, ++buffercount ) ) );
         }
         return( 0 ); // should never get here
@@ -151,9 +151,9 @@ public class tiny_gp {
                 case SUB:
                 case MUL:
                 case DIV:
-//                case LN:
-                case SIN:
-                case COS:
+                case LN:
+//                case SIN:
+//                case COS:
                     buffer[pos] = prim;
                     one_child = grow( buffer, pos+1, max,depth-1);
                     if ( one_child < 0 )
@@ -190,21 +190,21 @@ public class tiny_gp {
                       a1=print_indiv( buffer, ++buffercounter );
                       System.out.print( " / ");
                       break;
-            case SIN:
-                System.out.print( "sin( ");
-                a1=print_indiv( buffer, ++buffercounter );
-                System.out.print( " )");
-                return a1;
-            case COS:
-                System.out.print( "cos( ");
-                a1=print_indiv( buffer, ++buffercounter );
-                System.out.print( " )");
-                return a1;
-//            case LN:
-//                System.out.print( "ln( ");
+//            case SIN:
+//                System.out.print( "sin( ");
 //                a1=print_indiv( buffer, ++buffercounter );
 //                System.out.print( " )");
 //                return a1;
+//            case COS:
+//                System.out.print( "cos( ");
+//                a1=print_indiv( buffer, ++buffercounter );
+//                System.out.print( " )");
+//                return a1;
+            case LN:
+                System.out.print( "ln( ");
+                a1=print_indiv( buffer, ++buffercounter );
+                System.out.print( " )");
+                return a1;
         }
         a2=print_indiv( buffer, a1 );
         System.out.print( ")");
@@ -260,33 +260,33 @@ public class tiny_gp {
                 myWriter.write(" / ");
                 myWriter.close();
                 break;
-            case SIN:
-                myWriter = new FileWriter(fname,true);
-                myWriter.write("sin( ");
-                myWriter.close();
-                a1=save_best_indiv(fname, buffer, ++buffercounter );
-                myWriter = new FileWriter(fname,true);
-                myWriter.write( " )");
-                myWriter.close();
-                return a1;
-            case COS:
-                myWriter = new FileWriter(fname,true);
-                myWriter.write( "cos( ");
-                myWriter.close();
-                a1=save_best_indiv(fname, buffer, ++buffercounter );
-                myWriter = new FileWriter(fname,true);
-                myWriter.write( " )");
-                myWriter.close();
-                return a1;
-//            case LN:
+//            case SIN:
 //                myWriter = new FileWriter(fname,true);
-//                myWriter.write( "ln( ");
+//                myWriter.write("sin( ");
 //                myWriter.close();
 //                a1=save_best_indiv(fname, buffer, ++buffercounter );
 //                myWriter = new FileWriter(fname,true);
 //                myWriter.write( " )");
 //                myWriter.close();
 //                return a1;
+//            case COS:
+//                myWriter = new FileWriter(fname,true);
+//                myWriter.write( "cos( ");
+//                myWriter.close();
+//                a1=save_best_indiv(fname, buffer, ++buffercounter );
+//                myWriter = new FileWriter(fname,true);
+//                myWriter.write( " )");
+//                myWriter.close();
+//                return a1;
+            case LN:
+                myWriter = new FileWriter(fname,true);
+                myWriter.write( "ln( ");
+                myWriter.close();
+                a1=save_best_indiv(fname, buffer, ++buffercounter );
+                myWriter = new FileWriter(fname,true);
+                myWriter.write( " )");
+                myWriter.close();
+                return a1;
 
         }
         a2=save_best_indiv(fname, buffer, a1 );
@@ -421,9 +421,9 @@ public class tiny_gp {
                         case SUB:
                         case MUL:
                         case DIV:
-                        case SIN:
-                        case COS:
-//                        case LN:
+//                        case SIN:
+//                        case COS:
+                        case LN:
                             parentcopy[mutsite] =
                                 (char) (rd.nextInt(FSET_END - FSET_START + 1)
                                         + FSET_START);
@@ -505,7 +505,7 @@ public class tiny_gp {
     }
 
     public static void main(String[] args) {
-        for (int i=5; i<7; i++) {
+        for (int i=3; i<4; i++) {
             for (int j = 1;j<5;j++){
                 String fname = "data/data" + i + "/data_" + i + "_" + j + ".dat";
                 System.out.println(fname);
