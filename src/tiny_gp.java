@@ -17,8 +17,8 @@ public class tiny_gp {
     private static Random rd = new Random();
     private static final int ADD = 110, SUB = 111, MUL = 112, DIV = 113,
 //            SIN = 114, COS = 115,
-            LN = 114,
-        FSET_START = ADD, FSET_END = LN;
+//            LN = 114,
+        FSET_START = ADD, FSET_END = DIV;
     private static double minrandom, maxrandom;
     private static double [] x = new double[FSET_START];
     private static char [] program;
@@ -39,13 +39,13 @@ public class tiny_gp {
             case ADD : return( run() + run() );
             case SUB : return( run() - run() );
             case MUL : return( run() * run() );
-            case LN : {
-                double num = run();
-                if ( num <= 0.001 )
-                    return -num;
-                else
-                    return Math.log( num );
-            }
+//            case LN : {
+//                double num = run();
+//                if ( num <= 0.001 )
+//                    return -num;
+//                else
+//                    return Math.log( num );
+//            }
 //            case SIN : return Math.sin(run());
 //            case COS : return Math.cos(run());
             case DIV : {
@@ -68,7 +68,7 @@ public class tiny_gp {
             case SUB:
             case MUL:
             case DIV:
-            case LN:
+//            case LN:
 //            case SIN:
 //            case COS:
                 return( traverse( buffer, traverse( buffer, ++buffercount ) ) );
@@ -151,7 +151,7 @@ public class tiny_gp {
                 case SUB:
                 case MUL:
                 case DIV:
-                case LN:
+//                case LN:
 //                case SIN:
 //                case COS:
                     buffer[pos] = prim;
@@ -200,11 +200,11 @@ public class tiny_gp {
 //                a1=print_indiv( buffer, ++buffercounter );
 //                System.out.print( " )");
 //                return a1;
-            case LN:
-                System.out.print( "ln( ");
-                a1=print_indiv( buffer, ++buffercounter );
-                System.out.print( " )");
-                return a1;
+//            case LN:
+//                System.out.print( "ln( ");
+//                a1=print_indiv( buffer, ++buffercounter );
+//                System.out.print( " )");
+//                return a1;
         }
         a2=print_indiv( buffer, a1 );
         System.out.print( ")");
@@ -278,15 +278,15 @@ public class tiny_gp {
 //                myWriter.write( " )");
 //                myWriter.close();
 //                return a1;
-            case LN:
-                myWriter = new FileWriter(fname,true);
-                myWriter.write( "ln( ");
-                myWriter.close();
-                a1=save_best_indiv(fname, buffer, ++buffercounter );
-                myWriter = new FileWriter(fname,true);
-                myWriter.write( " )");
-                myWriter.close();
-                return a1;
+//            case LN:
+//                myWriter = new FileWriter(fname,true);
+//                myWriter.write( "ln( ");
+//                myWriter.close();
+//                a1=save_best_indiv(fname, buffer, ++buffercounter );
+//                myWriter = new FileWriter(fname,true);
+//                myWriter.write( " )");
+//                myWriter.close();
+//                return a1;
 
         }
         a2=save_best_indiv(fname, buffer, a1 );
@@ -343,6 +343,17 @@ public class tiny_gp {
         System.out.print("Generation="+gen+" Avg Fitness="+(-favgpop)+
                 " Best Fitness="+(-fbestpop)+" Avg Size="+avg_len+
                 "\nBest Individual: ");
+
+        try {
+            FileWriter myWriter = new FileWriter("process2.txt",true);
+            myWriter.write( gen+","+(-favgpop)+
+                ","+(-fbestpop)+","+avg_len+
+                "\n");
+            myWriter.close();
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+
         print_indiv( pop[best], 0 );
         BEST = best;
         System.out.print( "\n");
@@ -423,7 +434,7 @@ public class tiny_gp {
                         case DIV:
 //                        case SIN:
 //                        case COS:
-                        case LN:
+//                        case LN:
                             parentcopy[mutsite] =
                                 (char) (rd.nextInt(FSET_END - FSET_START + 1)
                                         + FSET_START);
@@ -505,8 +516,8 @@ public class tiny_gp {
     }
 
     public static void main(String[] args) {
-        for (int i=3; i<4; i++) {
-            for (int j = 1;j<5;j++){
+        for (int i=1; i<2; i++) {
+            for (int j = 2;j<3;j++){
                 String fname = "data/data" + i + "/data_" + i + "_" + j + ".dat";
                 System.out.println(fname);
                 long s = -1;
