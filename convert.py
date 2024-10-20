@@ -16,5 +16,7 @@ if __name__ == "__main__":
         for i, x in enumerate(args[2:]):
             sol = re.sub(f"X{i+1}",x,sol)
 
-    with open(args[1],"w") as f:
+    with open(args[1][:-4]+"_exel.txt","w") as f:
             f.write(sol)
+
+#python -m convert solution/solution6/solution_6_3.txt I2 J2

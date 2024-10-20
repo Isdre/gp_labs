@@ -16,7 +16,7 @@ public class tiny_gp {
     public char[][] pop;
     private static Random rd = new Random();
     private static final int ADD = 110, SUB = 111, MUL = 112, DIV = 113,
-    //            SIN = 114, COS = 115,
+                SIN = 114, COS = 115,
 //            LN = 114,
     FSET_START = ADD, FSET_END = DIV;
     private static double minrandom, maxrandom;
@@ -27,7 +27,7 @@ public class tiny_gp {
     private static double fbestpop = 0.0, favgpop = 0.0;
     private static long seed;
     private static double avg_len;
-    private static final int MAX_LEN = 10000, POPSIZE = 100000, DEPTH = 3, GENERATIONS = 2, TSIZE = 2;
+    private static final int MAX_LEN = 1000, POPSIZE = 100000, DEPTH = 3, GENERATIONS = 75, TSIZE = 2;
     public static final double PMUT_PER_NODE = 0.05, CROSSOVER_PROB = 0.9;
     private static double[][] targets;
 
@@ -49,8 +49,8 @@ public class tiny_gp {
 //                else
 //                    return Math.log( num );
 //            }
-//            case SIN : return Math.sin(run());
-//            case COS : return Math.cos(run());
+            case SIN : return Math.sin(run());
+            case COS : return Math.cos(run());
             case DIV: {
                 double num = run(), den = run();
                 if (Math.abs(den) <= 0.001)
@@ -72,8 +72,8 @@ public class tiny_gp {
             case MUL:
             case DIV:
 //            case LN:
-//            case SIN:
-//            case COS:
+            case SIN:
+            case COS:
                 return (traverse(buffer, traverse(buffer, ++buffercount)));
         }
         return (0); // should never get here
@@ -152,8 +152,8 @@ public class tiny_gp {
                 case MUL:
                 case DIV:
 //                case LN:
-//                case SIN:
-//                case COS:
+                case SIN:
+                case COS:
                     buffer[pos] = prim;
                     one_child = grow(buffer, pos + 1, max, depth - 1);
                     if (one_child < 0)
@@ -194,16 +194,16 @@ public class tiny_gp {
                 a1 = print_indiv(buffer, ++buffercounter);
                 System.out.print(" / ");
                 break;
-//            case SIN:
-//                System.out.print( "sin( ");
-//                a1=print_indiv( buffer, ++buffercounter );
-//                System.out.print( " )");
-//                return a1;
-//            case COS:
-//                System.out.print( "cos( ");
-//                a1=print_indiv( buffer, ++buffercounter );
-//                System.out.print( " )");
-//                return a1;
+            case SIN:
+                System.out.print( "sin( ");
+                a1=print_indiv( buffer, ++buffercounter );
+                System.out.print( " )");
+                return a1;
+            case COS:
+                System.out.print( "cos( ");
+                a1=print_indiv( buffer, ++buffercounter );
+                System.out.print( " )");
+                return a1;
 //            case LN:
 //                System.out.print( "ln( ");
 //                a1=print_indiv( buffer, ++buffercounter );
@@ -215,7 +215,7 @@ public class tiny_gp {
         return (a2);
     }
 
-    public int save_best_indiv(String fname, char[] buffer, int buffercounter) throws IOException {
+    private int save_best_indiv(String fname, char[] buffer, int buffercounter) throws IOException {
         int a1 = 0, a2;
         FileWriter myWriter;
         if (buffer[buffercounter] < FSET_START) {
@@ -264,24 +264,24 @@ public class tiny_gp {
                 myWriter.write(" / ");
                 myWriter.close();
                 break;
-//            case SIN:
-//                myWriter = new FileWriter(fname,true);
-//                myWriter.write("sin( ");
-//                myWriter.close();
-//                a1=save_best_indiv(fname, buffer, ++buffercounter );
-//                myWriter = new FileWriter(fname,true);
-//                myWriter.write( " )");
-//                myWriter.close();
-//                return a1;
-//            case COS:
-//                myWriter = new FileWriter(fname,true);
-//                myWriter.write( "cos( ");
-//                myWriter.close();
-//                a1=save_best_indiv(fname, buffer, ++buffercounter );
-//                myWriter = new FileWriter(fname,true);
-//                myWriter.write( " )");
-//                myWriter.close();
-//                return a1;
+            case SIN:
+                myWriter = new FileWriter(fname,true);
+                myWriter.write("sin( ");
+                myWriter.close();
+                a1=save_best_indiv(fname, buffer, ++buffercounter );
+                myWriter = new FileWriter(fname,true);
+                myWriter.write( " )");
+                myWriter.close();
+                return a1;
+            case COS:
+                myWriter = new FileWriter(fname,true);
+                myWriter.write( "cos( ");
+                myWriter.close();
+                a1=save_best_indiv(fname, buffer, ++buffercounter );
+                myWriter = new FileWriter(fname,true);
+                myWriter.write( " )");
+                myWriter.close();
+                return a1;
 //            case LN:
 //                myWriter = new FileWriter(fname,true);
 //                myWriter.write( "ln( ");
@@ -437,8 +437,8 @@ public class tiny_gp {
                         case SUB:
                         case MUL:
                         case DIV:
-//                        case SIN:
-//                        case COS:
+                        case SIN:
+                        case COS:
 //                        case LN:
                             parentcopy[mutsite] =
                                     (char) (rd.nextInt(FSET_END - FSET_START + 1)
@@ -480,7 +480,7 @@ public class tiny_gp {
         print_parms();
         stats(fitness, pop, 0);
         for (gen = 1; gen < GENERATIONS; gen++) {
-            if (fbestpop > -1e-5) {
+            if (fbestpop > -1e-3) {
                 System.out.print("PROBLEM SOLVED\n");
                 return;
             }
@@ -520,39 +520,39 @@ public class tiny_gp {
     }
 
     public static void main(String[] args) {
-//        for (int i=1; i<2; i++) {
-//            for (int j = 2;j<3;j++){
-//                String fname = "data/data" + i + "/data_" + i + "_" + j + ".dat";
-//                System.out.println(fname);
-//                long s = -1;
-//
-//                if (args.length == 2) {
-//                    s = Integer.valueOf(args[0]).intValue();
-//                    fname = args[1];
-//                }
-//                if (args.length == 1) {
-//                    fname = args[0];
-//                }
-//
-//                tiny_gp gp = new tiny_gp(fname, s);
-//                gp.evolve();
-//                gp.save(i,j);
-//            }
-//        }
-//    }
-        String fname = "data/data1/data_1_1.dat";
-        System.out.println(fname);
-        long s = -1;
+        for (int i=1; i<4; i++) {
+            for (int j = 1;j<2;j++){
+                String fname = "data/data" + i + "/data_" + i + "_" + j + ".dat";
+                System.out.println(fname);
+                long s = -1;
 
-        if (args.length == 2) {
-            s = Integer.valueOf(args[0]).intValue();
-            fname = args[1];
-        }
-        if (args.length == 1) {
-            fname = args[0];
-        }
+                if (args.length == 2) {
+                    s = Integer.valueOf(args[0]).intValue();
+                    fname = args[1];
+                }
+                if (args.length == 1) {
+                    fname = args[0];
+                }
 
-        tiny_gp gp = new tiny_gp(fname, s);
-        gp.evolve();
+                tiny_gp gp = new tiny_gp(fname, s);
+                gp.evolve();
+                gp.save(i,j);
+            }
+        }
     }
+//        String fname = "data/data1/data_1_1.dat";
+//        System.out.println(fname);
+//        long s = -1;
+//
+//        if (args.length == 2) {
+//            s = Integer.valueOf(args[0]).intValue();
+//            fname = args[1];
+//        }
+//        if (args.length == 1) {
+//            fname = args[0];
+//        }
+//
+//        tiny_gp gp = new tiny_gp(fname, s);
+//        gp.evolve();
+//    }
 }
